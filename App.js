@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import TaskList from "./src/pages/TaskList"
+import Auth from './src/pages/Auth';
 
 import { StyleSheet, Text, View, StatusBar } from 'react-native';
 
@@ -27,7 +28,8 @@ export default function App() {
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
       <StatusBar barStyle="default" />
-      <TaskList />
+      {/* <TaskList /> */}
+      <Auth />
     </View>
   );
 }
