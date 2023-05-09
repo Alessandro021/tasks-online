@@ -47,14 +47,14 @@ export default function TaskList(){
                 task.doneAt = task.doneAt ? null : new Date()
             }
         });
-        
+        filterTasks()
         setTasks(newTasks)
         saveStorage(newTasks)
     }
 
     function filterTasks(){
         let newVisibleTask = tasks.filter(task => {
-            return task.doneAt !== null
+            return task.doneAt === null
         })
         setVisibleTasks(newVisibleTask)
     }
@@ -82,7 +82,8 @@ export default function TaskList(){
 
             <ImageBackground style={styles.background} source={todayImage}>
                 <View style={styles.iconBar}>
-                    <TouchableOpacity onPress={toggleFilter}>
+                    <TouchableOpacity onPress={toggleFilter} style={styles.buttonIcon} activeOpacity={1}>
+                        <Text style={styles.textButton}>{showDoneTasks ? "Ocultar tarefa(s) concluida(s)" : "Mostrar tarefa(s) conclida(s)"}</Text>
                         <FontAwesome name={!showDoneTasks ? "eye" : "eye-slash"} size={25} color={utils.colors.secundario} />
                     </TouchableOpacity>
                 </View>
@@ -147,6 +148,21 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         marginTop: Platform.OS === "ios" ? 40 : 10,
    },
+
+   buttonIcon:{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center"
+   },
+
+   textButton: {
+        fontFamily: utils.fontFamily,
+        color: utils.colors.secundario,
+        fontSize: 14,
+        marginRight: 15,
+        fontWeight: "700"
+   },
+
    addButton:{
     position: "absolute",
     right: 30,
