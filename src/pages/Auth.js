@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity , ImageBackground, StatusBar, Alert} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from '@expo/vector-icons'
 
 import imageBackground from "../../assets/imgs/login.jpg"
 import utils from "../utils"
 import { api } from "../services";
+import axios from "axios";
 // import AuthInput from "../components/AuthInput";
 
 export default function Auth(){
@@ -14,11 +16,47 @@ export default function Auth(){
     const [confirmPassword, setConfirmPassword] = useState("")
     const [stageNew, setStageNew] = useState(false)
 
+    const navigation = useNavigation()
+
     function signinOrSignup(){
+        const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if(stageNew){
-            signup()
-        } else {
+            if(name.length < 2 || name.length > 32){
+                Alert.alert("Nome inválido", "O nome deve ter entre 2 e 32 caracteres.")
+                return
+            }
             
+            if(!emailRegex.test(email)){
+                Alert.alert("Email Invalido", "insira um endereço de e-mail válido")
+                return
+            }
+
+            if((password !== confirmPassword)){
+                Alert.alert("Senhas diferentes", "Senhas digitas são diferentes")
+                return
+            }
+            
+            if(password.length < 6){
+                Alert.alert("Senhas fraca", "Senhas digitas deve ter mais que 6 caracteres")
+                return
+            }
+            
+
+            signup()
+            
+        } else {
+
+            if(!emailRegex.test(email)){
+                Alert.alert("Email Invalido", "insira um endereço de e-mail válido")
+                return
+            }
+            
+            if(password.length < 6){
+                Alert.alert("Senhas fraca", "Senhas digitas deve ter mais que 6 caracteres")
+                return
+            }
+
+            signin()
         }
     }
 
@@ -42,6 +80,24 @@ export default function Auth(){
             
         } catch (error) {
             Alert.alert("Ops", `ERROR: ${error}`)
+        }
+    }
+
+    async function signin(){
+        try {
+            const response = await api.post("/signin", {
+                email: email,
+                password: password
+            })
+
+            axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`
+            navigation.navigate("TaskList")
+            setName("")
+            setEmail("")
+
+        } catch (error) {
+            Alert.alert("Ops", `ERROR: ${error}`)
+            
         }
     }
 
